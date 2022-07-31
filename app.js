@@ -44,22 +44,31 @@ const serverHandle = (req, res) => {
   getPostData(req).then((postData) => {
     req.body = postData;
     // 处理blog路由
-    const blogData = handleBlogRouter(req, res);
-    if (blogData) {
-      res.end(JSON.stringify(blogData));
+    const blogResult = handleBlogRouter(req, res);
+    if (blogResult) {
+      blogResult.then(blogData => {
+        res.end(JSON.stringify(blogData));
+      })
       return;
     }
 
     // 处理user路由
-    const userData = handleUserRouter(req, res);
-    if (userData) {
-      res.end(JSON.stringify(userData));
-      return;
-    }
+    // const userData = handleUserRouter(req, res);
+    // if (userData) {
+    //   res.end(JSON.stringify(userData));
+    //   return;
+    // }
 
-    res.writeHead("404", { "Content-type": "text/plain" });
-    res.write("404 Not Found!\n");
-    res.end();
+    // res.writeHead("404", { "Content-type": "text/plain" });
+    // res.write("404 Not Found!\n");
+    // res.end();
+    const userResult = handleUserRouter(req, res)
+    if (userResult) {
+      userResult.then(userData => {
+        res.end(JSON.stringify(userData));
+      })
+      return
+    }
   });
 };
 
